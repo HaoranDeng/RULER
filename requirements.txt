@@ -3,3 +3,4 @@ bs4
 nemo_toolkit[asr]
 wonderwords
 tenacity
+ntlk
