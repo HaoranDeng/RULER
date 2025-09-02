@@ -1,3 +1,4 @@
 html2text
 bs4
 nemo_toolkit[asr]
+wonderwords
