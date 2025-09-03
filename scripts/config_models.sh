@@ -16,8 +16,11 @@ TEMPERATURE="0.0" # greedy
 TOP_P="1.0"
 TOP_K="32"
 SEQ_LENGTHS=(
-    8192
     4096
+    8192
+    16384
+    32768
+    65536
 )
 
 MODEL_SELECT() {
