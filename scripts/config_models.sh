@@ -27,7 +27,7 @@ MODEL_SELECT() {
     
     case $MODEL_NAME in
         my_model)
-            MODEL_PATH=""
+            MODEL_PATH="my_path"
             MODEL_TEMPLATE_TYPE="meta-llama3"
             MODEL_FRAMEWORK="hf"
             ;;
