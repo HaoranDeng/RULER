@@ -16,6 +16,7 @@ import json
 import logging
 import requests
 import torch
+import traceback
 from typing import Dict, List, Optional
 
 
@@ -40,7 +41,15 @@ class HuggingFaceModel:
                 torch_dtype=torch.bfloat16,
                 model_kwargs=model_kwargs,
             )
-        except:
+        except Exception as e:
+            print(f"[ERROR] Failed to initialize pipeline:")
+            print(f"  - Exception type: {type(e).__name__}")
+            print(f"  - Exception message: {str(e)}")
+            print(f"  - Model path: {name_or_path}")
+            print(f"  - Model kwargs: {model_kwargs}")
+            print("  - Falling back to AutoModelForCausalLM...")
+            import traceback
+            traceback.print_exc()
             self.pipeline = None
             self.model = AutoModelForCausalLM.from_pretrained(name_or_path, trust_remote_code=True, device_map="auto", torch_dtype=torch.bfloat16,)
             
@@ -58,38 +67,64 @@ class HuggingFaceModel:
         return self.process_batch([prompt], **kwargs)[0]
 
     def process_batch(self, prompts: List[str], **kwargs) -> List[dict]:
-        if self.pipeline is None:
-            inputs = self.tokenizer(prompts, return_tensors="pt", padding=True).to(self.model.device)
-            generated_ids = self.model.generate(
-                **inputs,
-                **self.generation_kwargs
-            )
-            generated_texts = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
-        else:
-            output = self.pipeline(text_inputs=prompts, **self.generation_kwargs, )
-            assert len(output) == len(prompts)
-            # output in the form of a list of list of dictionaries
-            # outer list len = batch size
-            # inner list len = 1
-            generated_texts = [llm_result[0]["generated_text"] for llm_result in output]
+        try:
+            if self.pipeline is None:
+                inputs = self.tokenizer(prompts, return_tensors="pt", padding=True).to(self.model.device)
+                generated_ids = self.model.generate(
+                    **inputs,
+                    **self.generation_kwargs
+                )
+                generated_texts = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
+            else:
+                output = self.pipeline(text_inputs=prompts, **self.generation_kwargs, )
+                assert len(output) == len(prompts)
+                # output in the form of a list of list of dictionaries
+                # outer list len = batch size
+                # inner list len = 1
+                generated_texts = [llm_result[0]["generated_text"] for llm_result in output]
+        except Exception as e:
+            print(f"[ERROR] Model generation failed:")
+            print(f"  - Exception type: {type(e).__name__}")
+            print(f"  - Exception message: {str(e)}")
+            print(f"  - Batch size: {len(prompts)}")
+            print(f"  - Using pipeline: {self.pipeline is not None}")
+            print(f"  - Prompt lengths: {[len(p) for p in prompts[:3]]}")  # Show first 3 lengths
+            if len(prompts) > 3:
+                print(f"  - ... and {len(prompts) - 3} more prompts")
+            import traceback
+            traceback.print_exc()
+            # Return empty results for all prompts
+            generated_texts = [""] * len(prompts)
 
         results = []
 
-        for text, prompt in zip(generated_texts, prompts):
-            # remove the input form the generated text
-            # This is a workaround for the llama3 tokenizer not being able to reproduce the same prompt after tokenization
-            # see Issue https://github.com/NVIDIA/RULER/issues/54 for explaination
-            if self.pipeline is None:
-                tokenized_prompt = self.tokenizer(prompt, return_tensors="pt", padding=True)
-                prompt = self.tokenizer.decode(tokenized_prompt.input_ids[0], skip_special_tokens=True)
-            if text.startswith(prompt):
-                text = text[len(prompt):]
+        for i, (text, prompt) in enumerate(zip(generated_texts, prompts)):
+            try:
+                # remove the input form the generated text
+                # This is a workaround for the llama3 tokenizer not being able to reproduce the same prompt after tokenization
+                # see Issue https://github.com/NVIDIA/RULER/issues/54 for explaination
+                if self.pipeline is None:
+                    tokenized_prompt = self.tokenizer(prompt, return_tensors="pt", padding=True)
+                    prompt = self.tokenizer.decode(tokenized_prompt.input_ids[0], skip_special_tokens=True)
+                if text.startswith(prompt):
+                    text = text[len(prompt):]
 
-            if self.stop is not None:
-                for s in self.stop:
-                    text = text.split(s)[0]
+                if self.stop is not None:
+                    for s in self.stop:
+                        text = text.split(s)[0]
 
-            results.append({'text': [text]})
+                results.append({'text': [text]})
+            except Exception as e:
+                print(f"[ERROR] Text postprocessing failed for sample {i}:")
+                print(f"  - Exception type: {type(e).__name__}")
+                print(f"  - Exception message: {str(e)}")
+                print(f"  - Original text length: {len(text) if text else 'N/A'}")
+                print(f"  - Prompt length: {len(prompt) if prompt else 'N/A'}")
+                print(f"  - Stop tokens: {self.stop}")
+                import traceback
+                traceback.print_exc()
+                # Return empty result for this sample
+                results.append({'text': ['']})
 
         return results
 

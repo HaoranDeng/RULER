@@ -248,7 +248,17 @@ def main():
                 pred_list = llm.process_batch(prompts=input_list)
                 break
             except Exception as e:
+                print(f"[ERROR] Exception during batch processing:")
+                print(f"  - Exception type: {type(e).__name__}")
+                print(f"  - Exception message: {str(e)}")
+                print(f"  - Batch size: {len(input_list)}")
+                print(f"  - Task: {args.task if 'args' in globals() else 'N/A'}")
+                print(f"  - Indices: {index_list}")
                 traceback.print_exc()
+                print("  - Retrying batch processing...")
+                # Add a small delay before retry
+                import time
+                time.sleep(1)
 
         zipped_iter = zip(pred_list, idx_list, index_list, input_list,
                           outputs_list, others_list, truncation_list, length_list)
@@ -260,6 +270,12 @@ def main():
                 pred_text = pred['text'][0]
             else:
                 pred_text = ''
+                print(f"[WARNING] Empty prediction detected for sample {index}:")
+                print(f"  - Task: {args.task}")
+                print(f"  - Input length: {len(input) if input else 'N/A'}")
+                print(f"  - Pred object: {pred}")
+                print(f"  - Pred text type: {type(pred.get('text', 'N/A'))}")
+                print(f"  - Pred text length: {len(pred.get('text', [])) if pred.get('text') else 'N/A'}")
 
             outputs_parallel[idx] = {
                 'index': index,

@@ -78,9 +78,36 @@ random.Random(args.random_seed).shuffle(words)
 logger.info(f'loaded {len(words)} wonderwords')
 
 # Randleword english words
-with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "json/english_words.json") , "r") as f:
-    randle_words = list(json.load(f).values())
-    logger.info(f'loaded {len(randle_words)} randle words')
+json_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "json/english_words.json")
+try:
+    with open(json_file_path, "r") as f:
+        file_content = f.read()
+        print(f"DEBUG: JSON file content preview (first 200 chars): {file_content[:200]}")
+        
+        if "git-lfs.github.com" in file_content:
+            print("ERROR: english_words.json is a Git LFS pointer file, not actual JSON content!")
+            print("Please run 'git lfs pull' to download the actual file content.")
+            # Fallback to using wonderwords only
+            randle_words = words.copy()  # Use wonderwords as fallback
+            print(f"FALLBACK: Using wonderwords ({len(randle_words)} words) instead of randle words")
+        else:
+            f.seek(0)  # Reset file pointer
+            randle_words = list(json.load(f).values())
+            print(f"SUCCESS: loaded {len(randle_words)} randle words")
+except json.JSONDecodeError as e:
+    print(f"JSON DECODE ERROR: {str(e)}")
+    print(f"File path: {json_file_path}")
+    with open(json_file_path, "r") as f:
+        content = f.read()
+        print(f"File content: {content[:500]}...")
+    # Fallback to using wonderwords only
+    randle_words = words.copy()
+    print(f"FALLBACK: Using wonderwords ({len(randle_words)} words) instead of randle words")
+except Exception as e:
+    print(f"UNEXPECTED ERROR loading english_words.json: {type(e).__name__}: {str(e)}")
+    # Fallback to using wonderwords only
+    randle_words = words.copy()
+    print(f"FALLBACK: Using wonderwords ({len(randle_words)} words) instead of randle words")
 
 def get_example(num_words, common_repeats=30, uncommon_repeats=3, common_nums=10):
     if num_words <= len(words):
