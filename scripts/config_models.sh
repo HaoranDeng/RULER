@@ -17,11 +17,6 @@ TOP_P="1.0"
 TOP_K="32"
 SEQ_LENGTHS=(
     4096
-    8192
-    16384
-    32768
-    65536
-)
 
 MODEL_SELECT() {
     MODEL_NAME=$1
@@ -31,7 +26,7 @@ MODEL_SELECT() {
     case $MODEL_NAME in
         my_model)
             MODEL_PATH="my_path"
-            MODEL_TEMPLATE_TYPE="meta-llama3"
+            MODEL_TEMPLATE_TYPE="base"
             MODEL_FRAMEWORK="vllm"
             ;;
         llama2-7b-chat)
