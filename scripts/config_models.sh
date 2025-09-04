@@ -32,7 +32,7 @@ MODEL_SELECT() {
         my_model)
             MODEL_PATH="my_path"
             MODEL_TEMPLATE_TYPE="meta-llama3"
-            MODEL_FRAMEWORK="hf"
+            MODEL_FRAMEWORK="vllm"
             ;;
         llama2-7b-chat)
             MODEL_PATH="${MODEL_DIR}/llama2-7b-chat-hf"

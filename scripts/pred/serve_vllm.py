@@ -91,7 +91,7 @@ if __name__ == "__main__":
         epilog="For more information, see https://docs.vllm.ai/en/stable/configuration/engine_args.html",
     )
     parser.add_argument("--host", type=str, default="0.0.0.0")
-    parser.add_argument("--port", type=int, default=5000)
+    parser.add_argument("--port", type=int, default=12680)
     parser.add_argument("--ssl-keyfile", type=str, default=None)
     parser.add_argument("--ssl-certfile", type=str, default=None)
     parser.add_argument(

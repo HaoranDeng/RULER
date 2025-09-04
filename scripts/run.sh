@@ -23,11 +23,11 @@ fi
 
 
 # Root Directories
-GPUS="8" # GPU size for tensor_parallel.
+GPUS="1" # GPU size for tensor_parallel.
 ROOT_DIR="benchmark_root" # the path that stores generated task samples and model predictions.
 MODEL_DIR=".." # the path that contains individual model folders from HUggingface.
 ENGINE_DIR="." # the path that contains individual engine folders from TensorRT-LLM.
-BATCH_SIZE=32  # increase to improve GPU utilization
+BATCH_SIZE=1  # increase to improve GPU utilization
 
 
 # Model and Tokenizer
@@ -71,7 +71,12 @@ if [ "$MODEL_FRAMEWORK" == "vllm" ]; then
         --dtype bfloat16 \
         --disable-custom-all-reduce \
         &
+    # echo "Waiting for vLLM HTTP endpoint..."
+    # until curl -s http://127.0.0.1:8000/generate > /dev/null; do
+    # sleep 1
+    # done
 
+    echo "vLLM ready!"
 elif [ "$MODEL_FRAMEWORK" == "trtllm" ]; then
     python pred/serve_trt.py \
         --model_path=${MODEL_PATH} \
