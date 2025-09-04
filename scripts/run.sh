@@ -71,10 +71,10 @@ if [ "$MODEL_FRAMEWORK" == "vllm" ]; then
         --dtype bfloat16 \
         --disable-custom-all-reduce \
         &
-    # echo "Waiting for vLLM HTTP endpoint..."
-    # until curl -s http://127.0.0.1:8000/generate > /dev/null; do
-    # sleep 1
-    # done
+    echo "Waiting for vLLM HTTP endpoint..."
+    until curl -s http://127.0.0.1:12680/generate > /dev/null; do
+        sleep 1
+    done
 
     echo "vLLM ready!"
 elif [ "$MODEL_FRAMEWORK" == "trtllm" ]; then
