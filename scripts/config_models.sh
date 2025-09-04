@@ -17,6 +17,7 @@ TOP_P="1.0"
 TOP_K="32"
 SEQ_LENGTHS=(
     4096
+)
 
 MODEL_SELECT() {
     MODEL_NAME=$1
