@@ -269,13 +269,16 @@ def main():
             elif len(pred['text']) > 0:
                 pred_text = pred['text'][0]
             else:
-                pred_text = ''
+                raise NotImplementedError
+
+            if len(pred_text) == 0:
                 print(f"[WARNING] Empty prediction detected for sample {index}:")
                 print(f"  - Task: {args.task}")
                 print(f"  - Input length: {len(input) if input else 'N/A'}")
                 print(f"  - Pred object: {pred}")
                 print(f"  - Pred text type: {type(pred.get('text', 'N/A'))}")
                 print(f"  - Pred text length: {len(pred.get('text', [])) if pred.get('text') else 'N/A'}")
+                raise ValueError(f'Empty prediction for sample {index}')
 
             outputs_parallel[idx] = {
                 'index': index,
