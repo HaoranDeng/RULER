@@ -276,6 +276,8 @@ def main():
             if len(pred_text) == 0:
                 print(f"[WARNING] Empty prediction detected for sample {index}:")
                 print(f"  - Task: {args.task}")
+                print(f"  - length: {length}")
+                print(f"  - outputs: {outputs}")
                 print(f"  - Input length: {len(input) if input else 'N/A'}")
                 print(f"  - Pred object: {pred}")
                 print(f"  - Pred text type: {type(pred.get('text', 'N/A'))}")
