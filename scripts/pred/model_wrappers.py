@@ -94,7 +94,7 @@ class HuggingFaceModel:
             import traceback
             traceback.print_exc()
             # Return empty results for all prompts
-            generated_texts = [""] * len(prompts)
+            # generated_texts = [""] * len(prompts)
 
         results = []
 
@@ -107,6 +107,7 @@ class HuggingFaceModel:
                     tokenized_prompt = self.tokenizer(prompt, return_tensors="pt", padding=True)
                     prompt = self.tokenizer.decode(tokenized_prompt.input_ids[0], skip_special_tokens=True)
                 if text.startswith(prompt):
+                    print("text start with prompt.")
                     text = text[len(prompt):]
 
                 if self.stop is not None:
@@ -124,7 +125,7 @@ class HuggingFaceModel:
                 import traceback
                 traceback.print_exc()
                 # Return empty result for this sample
-                results.append({'text': ['']})
+                # results.append({'text': ['']})
 
         return results
 
