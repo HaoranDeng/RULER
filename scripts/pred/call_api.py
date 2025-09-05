@@ -271,6 +271,8 @@ def main():
             else:
                 raise NotImplementedError
 
+            assert isinstance(pred_text, str), f'pred_text should be str, got {type(pred_text)}'
+
             if len(pred_text) == 0:
                 print(f"[WARNING] Empty prediction detected for sample {index}:")
                 print(f"  - Task: {args.task}")
