@@ -16,6 +16,7 @@ TEMPERATURE="0.0" # greedy
 TOP_P="1.0"
 TOP_K="32"
 SEQ_LENGTHS=(
+    4096
     32768
 )
 
@@ -25,9 +26,9 @@ MODEL_SELECT() {
     ENGINE_DIR=$3
     
     case $MODEL_NAME in
-        llama2-7b-chat)
-            MODEL_PATH="${MODEL_DIR}/llama2-7b-chat-hf"
-            MODEL_TEMPLATE_TYPE="meta-chat"
+        my_model)
+            MODEL_PATH="/mnt/blob-pretraining-hptraining/long_corpus/checkpoints/lcft_Meta-Llama-3-8B_ready_book-odl/checkpoint-1000"
+            MODEL_TEMPLATE_TYPE="base"
             MODEL_FRAMEWORK="vllm"
             ;;
         llama3.1-8b)
