@@ -33,6 +33,11 @@ MODEL_SELECT() {
             MODEL_TEMPLATE_TYPE="base"
             MODEL_FRAMEWORK="vllm"
             ;;
+        llama3.1-8b-chat)
+            MODEL_PATH="/mnt/blob-pretraining-hptraining/long_corpus/checkpoints/Llama-3.1-8B-Instruct"
+            MODEL_TEMPLATE_TYPE="base"
+            MODEL_FRAMEWORK="vllm"
+            ;;
         llama3.1-8b)
             MODEL_PATH="/mnt/blob-pretraining-hptraining/long_corpus/checkpoints/Llama-3.1-8B"
             MODEL_TEMPLATE_TYPE="base"
