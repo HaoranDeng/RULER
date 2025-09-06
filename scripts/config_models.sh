@@ -17,7 +17,9 @@ TOP_P="1.0"
 TOP_K="32"
 SEQ_LENGTHS=(
     4096
+    8192
     32768
+    65536
 )
 
 MODEL_SELECT() {
@@ -33,6 +35,11 @@ MODEL_SELECT() {
             ;;
         llama3.1-8b)
             MODEL_PATH="/mnt/blob-pretraining-hptraining/long_corpus/checkpoints/Llama-3.1-8B"
+            MODEL_TEMPLATE_TYPE="base"
+            MODEL_FRAMEWORK="vllm"
+            ;;
+        code_model)
+            MODEL_PATH="/mnt/blob-pretraining-hptraining/long_corpus/checkpoints/lcft_Meta-Llama-3-8B_ready_code-odl/checkpoint-1000"
             MODEL_TEMPLATE_TYPE="base"
             MODEL_FRAMEWORK="vllm"
             ;;
