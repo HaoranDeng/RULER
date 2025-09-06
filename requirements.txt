@@ -4,3 +4,4 @@ nemo_toolkit[asr]
 wonderwords
 tenacity
 nltk
+fastapi
