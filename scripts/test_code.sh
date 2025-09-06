@@ -1,0 +1,1 @@
+bash run.sh code_model synthetic
