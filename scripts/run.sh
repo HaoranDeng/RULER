@@ -23,7 +23,14 @@ fi
 
 
 # Root Directories
-GPUS="8" # GPU size for tensor_parallel.
+# Automatically detect GPU count
+if command -v nvidia-smi >/dev/null 2>&1; then
+    GPUS=$(nvidia-smi -L | wc -l)
+    echo "Detected ${GPUS} GPU(s)"
+else
+    echo "Warning: nvidia-smi not found, defaulting to 1 GPU"
+    GPUS=1
+fi
 ROOT_DIR="/mnt/blob-pretraining-hptraining/haoran_result/RULER/" # the path that stores generated task samples and model predictions.
 MODEL_DIR=".." # the path that contains individual model folders from HUggingface.
 ENGINE_DIR="." # the path that contains individual engine folders from TensorRT-LLM.
@@ -65,7 +72,7 @@ fi
 
 # Start server (you may want to run in other container.)
 if [ "$MODEL_FRAMEWORK" == "vllm" ]; then
-    python pred/serve_vllm.py \
+    python3 pred/serve_vllm.py \
         --model=${MODEL_PATH} \
         --tensor-parallel-size=${GPUS} \
         --dtype bfloat16 \
@@ -105,7 +112,7 @@ for MAX_SEQ_LENGTH in "${SEQ_LENGTHS[@]}"; do
     mkdir -p ${PRED_DIR}
     
     for TASK in "${TASKS[@]}"; do
-        python data/prepare.py \
+        python3 data/prepare.py \
             --save_dir ${DATA_DIR} \
             --benchmark ${BENCHMARK} \
             --task ${TASK} \
@@ -117,7 +124,7 @@ for MAX_SEQ_LENGTH in "${SEQ_LENGTHS[@]}"; do
             ${REMOVE_NEWLINE_TAB}
         
         start_time=$(date +%s)
-        python pred/call_api.py \
+        python3 pred/call_api.py \
             --data_dir ${DATA_DIR} \
             --save_dir ${PRED_DIR} \
             --benchmark ${BENCHMARK} \
@@ -134,7 +141,7 @@ for MAX_SEQ_LENGTH in "${SEQ_LENGTHS[@]}"; do
         total_time=$((total_time + time_diff))
     done
     
-    python eval/evaluate.py \
+    python3 eval/evaluate.py \
         --data_dir ${PRED_DIR} \
         --benchmark ${BENCHMARK}
 done
