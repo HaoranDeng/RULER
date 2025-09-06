@@ -23,16 +23,9 @@ fi
 
 
 # Root Directories
-# Automatically detect GPU count
-if command -v nvidia-smi >/dev/null 2>&1; then
-    GPUS=$(nvidia-smi -L | wc -l)
-    echo "Detected ${GPUS} GPU(s)"
-else
-    echo "Warning: nvidia-smi not found, defaulting to 1 GPU"
-    GPUS=1
-fi
-ROOT_DIR="/mnt/blob-pretraining-hptraining/haoran_result/RULER/" # the path that stores generated task samples and model predictions.
-MODEL_DIR=".." # the path that contains individual model folders from HUggingface.
+GPUS="8" # GPU size for tensor_parallel.
+ROOT_DIR="/mnt/blob-pretraining-hptraining/haoran_result/RULER_NEW" # the path that stores generated task samples and model predictions.
+MODEL_DIR="../.." # the path that contains individual model folders from HUggingface.
 ENGINE_DIR="." # the path that contains individual engine folders from TensorRT-LLM.
 BATCH_SIZE=1  # increase to improve GPU utilization
 
@@ -47,11 +40,6 @@ if [ -z "${MODEL_PATH}" ]; then
     exit 1
 fi
 
-
-MODEL_NAME=$MY_MODEL_NAME
-MODEL_PATH=$MY_MODEL_PATH
-TOKENIZER_PATH=$MODEL_PATH
-TOKENIZER_TYPE="hf"
 
 export OPENAI_API_KEY=${OPENAI_API_KEY}
 export GEMINI_API_KEY=${GEMINI_API_KEY}
@@ -72,18 +60,13 @@ fi
 
 # Start server (you may want to run in other container.)
 if [ "$MODEL_FRAMEWORK" == "vllm" ]; then
-    python3 pred/serve_vllm.py \
+    python pred/serve_vllm.py \
         --model=${MODEL_PATH} \
         --tensor-parallel-size=${GPUS} \
         --dtype bfloat16 \
         --disable-custom-all-reduce \
         &
-    echo "Waiting for vLLM HTTP endpoint..."
-    until curl -s http://127.0.0.1:12680/generate > /dev/null; do
-        sleep 1
-    done
 
-    echo "vLLM ready!"
 elif [ "$MODEL_FRAMEWORK" == "trtllm" ]; then
     python pred/serve_trt.py \
         --model_path=${MODEL_PATH} \
@@ -105,14 +88,14 @@ fi
 total_time=0
 for MAX_SEQ_LENGTH in "${SEQ_LENGTHS[@]}"; do
     
-    RESULTS_DIR="${ROOT_DIR}/${MY_MODEL_NAME}/${BENCHMARK}/${MAX_SEQ_LENGTH}"
+    RESULTS_DIR="${ROOT_DIR}/${MODEL_NAME}/${BENCHMARK}/${MAX_SEQ_LENGTH}"
     DATA_DIR="${RESULTS_DIR}/data"
     PRED_DIR="${RESULTS_DIR}/pred"
     mkdir -p ${DATA_DIR}
     mkdir -p ${PRED_DIR}
     
     for TASK in "${TASKS[@]}"; do
-        python3 data/prepare.py \
+        python data/prepare.py \
             --save_dir ${DATA_DIR} \
             --benchmark ${BENCHMARK} \
             --task ${TASK} \
@@ -124,13 +107,13 @@ for MAX_SEQ_LENGTH in "${SEQ_LENGTHS[@]}"; do
             ${REMOVE_NEWLINE_TAB}
         
         start_time=$(date +%s)
-        python3 pred/call_api.py \
+        python pred/call_api.py \
             --data_dir ${DATA_DIR} \
             --save_dir ${PRED_DIR} \
             --benchmark ${BENCHMARK} \
             --task ${TASK} \
             --server_type ${MODEL_FRAMEWORK} \
-            --model_name_or_path ${MY_MODEL_PATH} \
+            --model_name_or_path ${MODEL_PATH} \
             --temperature ${TEMPERATURE} \
             --top_k ${TOP_K} \
             --top_p ${TOP_P} \
@@ -141,7 +124,7 @@ for MAX_SEQ_LENGTH in "${SEQ_LENGTHS[@]}"; do
         total_time=$((total_time + time_diff))
     done
     
-    python3 eval/evaluate.py \
+    python eval/evaluate.py \
         --data_dir ${PRED_DIR} \
         --benchmark ${BENCHMARK}
 done

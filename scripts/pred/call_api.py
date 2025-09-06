@@ -73,7 +73,7 @@ parser.add_argument("--chunk_amount", type=int, default=1, help='size of split c
 # Server
 parser.add_argument("--server_type", default='nemo', action=ServerAction, choices=SERVER_TYPES)
 parser.add_argument("--server_host", type=str, default='127.0.0.1')
-parser.add_argument("--server_port", type=str, default='12680')
+parser.add_argument("--server_port", type=str, default='5000')
 parser.add_argument("--ssh_server", type=str)
 parser.add_argument("--ssh_key_path", type=str)
 parser.add_argument("--model_name_or_path", type=str, default='gpt-3.5-turbo', 
@@ -248,17 +248,7 @@ def main():
                 pred_list = llm.process_batch(prompts=input_list)
                 break
             except Exception as e:
-                print(f"[ERROR] Exception during batch processing:")
-                print(f"  - Exception type: {type(e).__name__}")
-                print(f"  - Exception message: {str(e)}")
-                print(f"  - Batch size: {len(input_list)}")
-                print(f"  - Task: {args.task if 'args' in globals() else 'N/A'}")
-                print(f"  - Indices: {index_list}")
                 traceback.print_exc()
-                print("  - Retrying batch processing...")
-                # Add a small delay before retry
-                import time
-                time.sleep(1)
 
         zipped_iter = zip(pred_list, idx_list, index_list, input_list,
                           outputs_list, others_list, truncation_list, length_list)
@@ -269,20 +259,7 @@ def main():
             elif len(pred['text']) > 0:
                 pred_text = pred['text'][0]
             else:
-                raise NotImplementedError
-
-            assert isinstance(pred_text, str), f'pred_text should be str, got {type(pred_text)}'
-
-            if len(pred_text) == 0:
-                print(f"[WARNING] Empty prediction detected for sample {index}:")
-                print(f"  - Task: {args.task}")
-                print(f"  - length: {length}")
-                print(f"  - outputs: {outputs}")
-                print(f"  - Input length: {len(input) if input else 'N/A'}")
-                print(f"  - Pred object: {pred}")
-                print(f"  - Pred text type: {type(pred.get('text', 'N/A'))}")
-                print(f"  - Pred text length: {len(pred.get('text', [])) if pred.get('text') else 'N/A'}")
-                raise ValueError(f'Empty prediction for sample {index}')
+                pred_text = ''
 
             outputs_parallel[idx] = {
                 'index': index,

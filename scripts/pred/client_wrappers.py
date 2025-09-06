@@ -404,16 +404,7 @@ class GeminiClient:
             response = {'text': [outputs.candidates[0].content.parts[0].text]}
         except Exception as e:
             response = {'text': []}
-            print(f"[ERROR] Gemini API response parsing failed:")
-            print(f"  - Exception type: {type(e).__name__}")
-            print(f"  - Exception message: {str(e)}")
-            print(f"  - Model name: {self.model_name}")
-            print(f"  - Raw outputs: {outputs}")
-            print(f"  - Outputs type: {type(outputs)}")
-            if hasattr(outputs, 'candidates'):
-                print(f"  - Candidates count: {len(outputs.candidates) if outputs.candidates else 0}")
-                if outputs.candidates:
-                    print(f"  - First candidate: {outputs.candidates[0]}")
+            print(outputs)
             traceback.print_exc()
             
         return response

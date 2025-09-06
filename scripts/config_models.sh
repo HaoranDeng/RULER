@@ -16,8 +16,12 @@ TEMPERATURE="0.0" # greedy
 TOP_P="1.0"
 TOP_K="32"
 SEQ_LENGTHS=(
-    32768
+    131072
     65536
+    32768
+    16384
+    8192
+    4096
 )
 
 MODEL_SELECT() {
@@ -26,20 +30,15 @@ MODEL_SELECT() {
     ENGINE_DIR=$3
     
     case $MODEL_NAME in
-        my_model)
-            MODEL_PATH="my_path"
-            MODEL_TEMPLATE_TYPE="base"
-            MODEL_FRAMEWORK="vllm"
-            ;;
         llama2-7b-chat)
             MODEL_PATH="${MODEL_DIR}/llama2-7b-chat-hf"
             MODEL_TEMPLATE_TYPE="meta-chat"
             MODEL_FRAMEWORK="vllm"
             ;;
         llama3.1-8b-chat)
-            MODEL_PATH="${MODEL_DIR}/llama-3.1-8b-Instruct"
+            MODEL_PATH="/mnt/blob-pretraining-hptraining/long_corpus/checkpoints/Llama-3.1-8B-Instruct"
             MODEL_TEMPLATE_TYPE="meta-llama3"
-            MODEL_FRAMEWORK="hf"
+            MODEL_FRAMEWORK="vllm"
             ;;
         jamba1.5-mini)
             MODEL_PATH="${MODEL_DIR}/Jamba-1.5-Mini"
