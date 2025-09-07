@@ -30,7 +30,7 @@ MODEL_SELECT() {
     
     case $MODEL_NAME in
         code_odls)
-            MODEL_PATH="/mnt/blob-pretraining-hptraining/long_corpus/checkpoints/sft_checkpoint-1000_ready_ultrachat"
+            MODEL_PATH="/mnt/blob-pretraining-hptraining/long_corpus/checkpoints/sft_code-odl-1000"
             MODEL_TEMPLATE_TYPE="meta-chat"
             MODEL_FRAMEWORK="vllm"
             ;;
