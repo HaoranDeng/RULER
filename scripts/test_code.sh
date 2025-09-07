@@ -1,1 +1,1 @@
-bash run.sh code_model synthetic
+bash run.sh code_odls synthetic

@@ -29,6 +29,11 @@ MODEL_SELECT() {
     ENGINE_DIR=$3
     
     case $MODEL_NAME in
+        code_odls)
+            MODEL_PATH="/mnt/blob-pretraining-hptraining/long_corpus/checkpoints/sft_checkpoint-1000_ready_ultrachat"
+            MODEL_TEMPLATE_TYPE="meta-llama"
+            MODEL_FRAMEWORK="vllm"
+            ;;
         my_model)
             MODEL_PATH="/mnt/blob-pretraining-hptraining/long_corpus/checkpoints/lcft_Meta-Llama-3-8B_ready_book-odl/checkpoint-1000"
             MODEL_TEMPLATE_TYPE="base"
