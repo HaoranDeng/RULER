@@ -56,7 +56,7 @@ MODEL_SELECT() {
             ;;
         llama3.1-8b-chat)
             MODEL_PATH="/mnt/blob-pretraining-hptraining/long_corpus/checkpoints/Llama-3.1-8B-Instruct"
-            MODEL_TEMPLATE_TYPE="meta-chat"
+            MODEL_TEMPLATE_TYPE="meta-llama3"
             MODEL_FRAMEWORK="vllm"
             ;;
         llama3.1-8b)
