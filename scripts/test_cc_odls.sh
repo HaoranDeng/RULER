@@ -1,0 +1,1 @@
+bash run.sh cc_odls synthetic
