@@ -29,6 +29,11 @@ MODEL_SELECT() {
     ENGINE_DIR=$3
     
     case $MODEL_NAME in
+        book_wj55_sft)
+            MODEL_PATH="/mnt/blob-pretraining-hptraining/long_corpus/checkpoints/sft_book-wj55-1000"
+            MODEL_TEMPLATE_TYPE="meta-chat"
+            MODEL_FRAMEWORK="vllm"
+            ;;
         book_wj55_base)
             MODEL_PATH="/mnt/blob-pretraining-hptraining/long_corpus/checkpoints/lcft_Meta-Llama-3-8B_ready_book-wj55"
             MODEL_TEMPLATE_TYPE="base"
