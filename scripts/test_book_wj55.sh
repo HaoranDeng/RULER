@@ -1,1 +1,0 @@
-bash run.sh book_wj55 synthetic
