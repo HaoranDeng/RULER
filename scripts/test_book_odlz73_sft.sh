@@ -1,0 +1,1 @@
+bash run.sh book_odlz73_sft synthetic
