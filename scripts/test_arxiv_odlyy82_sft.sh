@@ -1,0 +1,1 @@
+bash run.sh arxiv_odlyy82_sft synthetic

@@ -26,6 +26,16 @@ MODEL_SELECT() {
     ENGINE_DIR=$3
     
     case $MODEL_NAME in
+        arxiv_odlyy82_sft)
+            MODEL_PATH="/mnt/blob-pretraining-hptraining/long_corpus/checkpoints/sft_arxiv-odlyy82-1000"
+            MODEL_TEMPLATE_TYPE="meta-chat"
+            MODEL_FRAMEWORK="vllm"
+            ;;
+        book_odlyy82_sft)
+            MODEL_PATH="/mnt/blob-pretraining-hptraining/long_corpus/checkpoints/sft_book-odlyy82-1000"
+            MODEL_TEMPLATE_TYPE="meta-chat"
+            MODEL_FRAMEWORK="vllm"
+            ;;
         book_odlz73_sft)
             MODEL_PATH="/mnt/blob-pretraining-hptraining/long_corpus/checkpoints/sft_book-odlz73-1000"
             MODEL_TEMPLATE_TYPE="meta-chat"
