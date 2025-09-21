@@ -1,0 +1,1 @@
+bash run.sh book_vanilla_sft synthetic

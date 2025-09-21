@@ -31,8 +31,18 @@ MODEL_SELECT() {
             MODEL_TEMPLATE_TYPE="meta-chat"
             MODEL_FRAMEWORK="vllm"
             ;;
+        book_vanilla_sft)
+            MODEL_PATH="/mnt/blob-pretraining-hptraining/long_corpus/checkpoints/sft_book-vanilla-1000/checkpoint-250"
+            MODEL_TEMPLATE_TYPE="meta-chat"
+            MODEL_FRAMEWORK="vllm"
+            ;;
         book_odlyy82_sft)
             MODEL_PATH="/mnt/blob-pretraining-hptraining/long_corpus/checkpoints/sft_book-odlyy82-1000/checkpoint-250"
+            MODEL_TEMPLATE_TYPE="meta-chat"
+            MODEL_FRAMEWORK="vllm"
+            ;;
+        book_wj55_sft)
+            MODEL_PATH="/mnt/blob-pretraining-hptraining/long_corpus/checkpoints/sft_book-wj55-1000/checkpoint-250"
             MODEL_TEMPLATE_TYPE="meta-chat"
             MODEL_FRAMEWORK="vllm"
             ;;
