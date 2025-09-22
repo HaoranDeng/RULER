@@ -1,0 +1,1 @@
+bash run.sh cc_odlyy82_sft synthetic

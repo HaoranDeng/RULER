@@ -1,0 +1,1 @@
+bash run.sh cc_wj55_sft synthetic

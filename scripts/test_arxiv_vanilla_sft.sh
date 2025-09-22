@@ -1,0 +1,1 @@
+bash run.sh arxiv_vanilla_sft synthetic

@@ -1,0 +1,1 @@
+bash run.sh arxiv_wj55_sft synthetic
